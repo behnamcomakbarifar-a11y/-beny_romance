@@ -1,0 +1,4 @@
+enum MentalState {
+  normal,
+  guarded,
+}

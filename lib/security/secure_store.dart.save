@@ -1,0 +1,63 @@
+import 
+'package:flutter_secure_storage/flutter_secure_storage.dart';
+/// SecureStore / ---------------------------- / 
+//مسئول ذخیره‌سازی امن: / - توکن‌ها / - وضعیت Kill 
+//Switch / - کلیدهای AI / - فلگ‌های امنیتی / / ⚠️ هیچ 
+//داده حساسی نباید خارج از این کلاس ذخیره شود
+class SecureStore { SecureStore._(); static const 
+  _storage = FlutterSecureStorage(
+    aOptions: AndroidOptions( 
+      encryptedSharedPreferences: true,
+    ), );
+  // =============================== Keys (Private) 
+  // ===============================
+  static const String _keyAuthToken = 'auth_token'; 
+  static const String _keyAiAccess = 
+  'ai_access_enabled'; static const String 
+  _keyKillSwitch = 'kill_switch'; static const 
+  String _keyLastSecurityCheck = 
+  'last_security_check';
+  // =============================== Auth Token 
+  // ===============================
+  static Future<void> saveAuthToken(String token) 
+  async {
+    await _storage.write(key: _keyAuthToken, value: 
+    token);
+  }
+  static Future<String?> getAuthToken() async { 
+    return await _storage.read(key: _keyAuthToken);
+  }
+  static Future<void> clearAuthToken() async { await 
+    _storage.delete(key: _keyAuthToken);
+  }
+  // =============================== AI Access 
+  // Control ===============================
+  static Future<void> enableAiAccess() async { await 
+    _storage.write(key: _keyAiAccess, value: 
+    'true');
+  }
+  static Future<void> disableAiAccess() async { 
+    await _storage.write(key: _keyAiAccess, value: 
+    'false');
+  }
+  static Future<bool> isAiAccessEnabled() async { 
+    final value = await _storage.read(key: 
+    _keyAiAccess); return value == 'true';
+  }
+  // =============================== Kill Switch 
+  // ===============================
+  /// اگر true باشد: / - AI Core کاملاً غیرفعال است / 
+  //- هیچ مدلی نباید پاسخ دهد
+  static Future<void> activateKillSwitch() async { 
+    await _storage.write(key: _keyKillSwitch, value: 
+    'true'); static Future<void> 
+    deactivateKillSwitch() async { await 
+    _storage.write(key: _keyKillSwitch, value: 
+    'false');
+  }
+  static Future<bool> isKillSwitchActive() async { 
+    final value = await _storage.read(key: 
+    _keyKillSwitch); return value == 'true';
+  }
+  // ===============================
+cat > lib/security/secure_store.dart
